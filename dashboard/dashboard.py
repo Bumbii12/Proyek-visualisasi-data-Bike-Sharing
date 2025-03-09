@@ -15,7 +15,7 @@ min_date = df["dteday"].min()
 max_date = df["dteday"].max()
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Bicycle_icon.svg/512px-Bicycle_icon.svg.png")
+    st.image("https://www.svgrepo.com/show/70289/bike.svg")
     start_date, end_date = st.date_input(
         label="Pilih Rentang Waktu",
         min_value=min_date,
@@ -41,25 +41,77 @@ sns.barplot(x="season_label", y="cnt", data=df_season, palette="Blues", ax=ax)
 plt.title("Rata-rata Peminjaman Sepeda per Musim", fontsize=14, fontweight="bold")
 st.pyplot(fig)
 
-st.subheader("Rata-rata Peminjaman Sepeda Berdasarkan Kondisi Cuaca")
+st.subheader("Pengaruh Cuaca terhadap Penyewaan Sepeda")
 
-df_weather = df.groupby("weathersit")["cnt"].mean().reset_index()
-weather_labels = {1: "Cerah", 2: "Mendung", 3: "Hujan Ringan"}
-df_weather["weather_label"] = df_weather["weathersit"].map(weather_labels)
-df_weather = df_weather.sort_values(by="cnt", ascending=True)
+weather_labels = {
+    1: "Cerah/Sedikit Berawan",
+    2: "Mendung",
+    3: "Hujan Ringan/Salju",
+    4: "Cuaca Ekstrem"
+}
+
+df["weathersit"] = df["weathersit"].replace(weather_labels)
+weather_avg_rentals = df.groupby("weathersit")["cnt"].mean().reset_index()
+weather_avg_rentals = weather_avg_rentals.sort_values(by="cnt", ascending=False)
+
+base_color = "#63b3ed"
+highlight_color = "#1e4e8c"
+colors = [highlight_color if i == 0 else base_color for i in range(len(weather_avg_rentals))]
 
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x="weather_label", y="cnt", data=df_weather, palette="Reds", ax=ax)
+sns.barplot(
+    data=weather_avg_rentals,
+    x="weathersit",
+    y="cnt",
+    hue="weathersit",
+    palette=colors,
+    legend=False
+)
+
+max_height = weather_avg_rentals["cnt"].max()
+plt.ylim(0, max_height * 1.2)
+
+for p in ax.patches:
+    ax.annotate(
+        f"{int(p.get_height())}",
+        (p.get_x() + p.get_width() / 2, p.get_height() + max_height * 0.05),
+        ha="center",
+        fontsize=12,
+        fontweight="bold"
+    )
+
+plt.title("Pengaruh Cuaca terhadap Penyewaan Sepeda", fontsize=16, fontweight="bold", pad=10)
+plt.xlabel("Kondisi Cuaca", fontsize=12, labelpad=8)
+plt.ylabel("Rata-rata Penyewaan Sepeda", fontsize=12, labelpad=8)
+plt.xticks(rotation=5, fontsize=11)
+plt.yticks(fontsize=11)
 st.pyplot(fig)
 
-st.subheader("Dampak Kelembapan terhadap Peminjaman Sepeda")
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.scatterplot(x=df["hum"], y=df["cnt"], alpha=0.6, color="blue", ax=ax)
-sns.regplot(x=df["hum"], y=df["cnt"], scatter=False, color="black", line_kws={"linestyle": "dashed"}, ax=ax)
-st.pyplot(fig)
+st.subheader("Pengaruh Hari Libur terhadap Penyewaan Sepeda")
 
-st.subheader("Dampak Kecepatan Angin terhadap Peminjaman Sepeda")
+df_holiday = df.groupby("holiday")["cnt"].mean().reset_index()
+holiday_labels = {0: "Hari Kerja", 1: "Hari Libur"}
+df_holiday["holiday_label"] = df_holiday["holiday"].map(holiday_labels)
+df_holiday = df_holiday.sort_values(by="cnt", ascending=True)
+
+colors = ["#63b3ed", "#2b6cb0"]
+
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.scatterplot(x=df["windspeed"], y=df["cnt"], alpha=0.6, color="red", ax=ax)
-sns.regplot(x=df["windspeed"], y=df["cnt"], scatter=False, color="black", line_kws={"linestyle": "dashed"}, ax=ax)
+sns.barplot(
+    x="holiday_label",
+    y="cnt",
+    data=df_holiday,
+    hue="holiday_label",
+    palette=colors,
+    legend=False
+)
+
+plt.ylim(0, df_holiday["cnt"].max() * 1.2)
+
+for i, row in enumerate(df_holiday.itertuples()):
+    plt.text(i, row.cnt * 1.05, f"{row.cnt:.2f}", ha="center", fontsize=12, fontweight="bold")
+
+plt.title("Pengaruh Hari Libur terhadap Penyewaan Sepeda", fontsize=14, fontweight="bold")
+plt.xlabel("Kategori Hari", fontsize=12)
+plt.ylabel("Rata-rata Penyewaan Sepeda", fontsize=12)
 st.pyplot(fig)
