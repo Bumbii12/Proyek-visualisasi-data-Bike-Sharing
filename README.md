@@ -26,4 +26,4 @@ python -m streamlit run dashboard.py
 ## 🌍 3. Akses Dashboard yang Sudah Dideploy 🌍
 Kunjungi tautan berikut untuk melihat dashboard secara langsung:  
 
-**[Dashboard Bike Sharing 🎉📊🚴](#)**
+**[Dashboard Bike Sharing 🎉📊🚴](#https://proyek-visualisasi-data-bike-sharing-bum.streamlit.app/)**
