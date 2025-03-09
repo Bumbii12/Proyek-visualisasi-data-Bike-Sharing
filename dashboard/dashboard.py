@@ -7,7 +7,7 @@ st.title("Analisis Bike Sharing dengan Streamlit")
 st.write("Menjelajahi faktor-faktor yang mempengaruhi peminjaman sepeda.")
 
 # Load dataset
-df = pd.read_csv("all_data.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/Bumbii12/Proyek-visualisasi-data-Bike-Sharing/refs/heads/main/dashboard/all_data.csv")
 
 df["dteday"] = pd.to_datetime(df["dteday"])
 
