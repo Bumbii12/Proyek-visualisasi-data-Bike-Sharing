@@ -27,5 +27,5 @@ python -m streamlit run dashboard.py
 Kunjungi tautan berikut untuk melihat dashboard secara langsung:  
 
 ```sh
-https://proyek-visualisasi-data-bike-sharing-bum.streamlit.app/
+https://proyek-visualisasi-data-bike-sharing-bumbum.streamlit.app/
 ```

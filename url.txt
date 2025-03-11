@@ -1,1 +1,1 @@
-https://proyek-visualisasi-data-bike-sharing-bum.streamlit.app/
+https://proyek-visualisasi-data-bike-sharing-bumbum.streamlit.app/
