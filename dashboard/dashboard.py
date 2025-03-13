@@ -21,12 +21,15 @@ with st.sidebar:
         value=[min_date, max_date]
     )
 
+# **Filter dataset berdasarkan rentang tanggal yang dipilih**
+filtered_df = df[(df["dteday"] >= pd.to_datetime(start_date)) & (df["dteday"] <= pd.to_datetime(end_date))]
+
 st.subheader("Dataset yang Digunakan")
-st.dataframe(df.head())
+st.dataframe(filtered_df.head())  # Menampilkan dataset yang sudah difilter
 
 st.subheader("Pengaruh Cuaca terhadap Penyewaan Sepeda")
 
-weather_avg_rentals = df.groupby("weathersit")["cnt"].mean().reset_index()
+weather_avg_rentals = filtered_df.groupby("weathersit")["cnt"].mean().reset_index()
 weather_avg_rentals = weather_avg_rentals.sort_values(by="cnt", ascending=False)
 
 base_color = "#63b3ed"
@@ -66,13 +69,9 @@ st.pyplot(fig)
 st.subheader("Rata-rata Peminjaman Sepeda per Musim")
 
 season_labels = {1: "Winter", 2: "Spring", 3: "Summer", 4: "Fall"}
-df["season"] = df["season"].replace(season_labels)
-df_season = df.groupby("season")["cnt"].mean().reset_index()
+filtered_df["season"] = filtered_df["season"].replace(season_labels)
+df_season = filtered_df.groupby("season")["cnt"].mean().reset_index()
 df_season = df_season.sort_values(by="cnt", ascending=False)
-
-base_color = "#63b3ed"
-highlight_color = "#1e4e8c"
-colors = [highlight_color if i == 0 else base_color for i in range(len(df_season))]
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(
@@ -105,14 +104,10 @@ st.pyplot(fig)
 
 st.subheader("Pengaruh Hari Libur terhadap Penyewaan Sepeda")
 
-df_holiday = df.groupby("holiday")["cnt"].mean().reset_index()
+df_holiday = filtered_df.groupby("holiday")["cnt"].mean().reset_index()
 holiday_labels = {0: "Hari Kerja", 1: "Hari Libur"}
 df_holiday["holiday"] = df_holiday["holiday"].replace(holiday_labels)
 df_holiday = df_holiday.sort_values(by="cnt", ascending=False)
-
-base_color = "#63b3ed"
-highlight_color = "#1e4e8c"
-colors = [highlight_color if i == 0 else base_color for i in range(len(df_holiday))]
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(
@@ -146,17 +141,13 @@ st.pyplot(fig)
 
 st.subheader("Distribusi Kategori Penyewaan Sepeda")
 
-bins = [0, 100, 200, df["cnt"].max()]
+bins = [0, 100, 200, filtered_df["cnt"].max()]
 labels = ["Rendah", "Sedang", "Tinggi"]
-df["kategori_penyewaan"] = pd.cut(df["cnt"], bins=bins, labels=labels, include_lowest=True)
+filtered_df["kategori_penyewaan"] = pd.cut(filtered_df["cnt"], bins=bins, labels=labels, include_lowest=True)
 
-df_kategori = df["kategori_penyewaan"].value_counts().reset_index()
+df_kategori = filtered_df["kategori_penyewaan"].value_counts().reset_index()
 df_kategori.columns = ["Kategori", "Jumlah"]
 df_kategori = df_kategori.sort_values(by="Jumlah", ascending=False)
-
-base_color = "#63b3ed"
-highlight_color = "#1e4e8c"
-colors = [highlight_color if i == 0 else base_color for i in range(len(df_kategori))]
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(

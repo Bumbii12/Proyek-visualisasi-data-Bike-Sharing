@@ -20,12 +20,12 @@ pip install -r requirements.txt
 
 ## 🚀 2. Menjalankan Aplikasi 🚀
 ```sh
-python -m streamlit run dashboard.py
+python streamlit run dashboard/dashboard.py
 ```
 
 ## 🌍 3. Akses Dashboard yang Sudah Dideploy 🌍
 Kunjungi tautan berikut untuk melihat dashboard secara langsung:  
 
 ```sh
-https://proyek-visualisasi-data-bike-sharing-bumbum.streamlit.app/
+https://proyek-visualisasi-data-bike-sharing-bumbii12.streamlit.app/
 ```
